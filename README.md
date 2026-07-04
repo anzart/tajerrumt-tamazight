@@ -10,15 +10,10 @@ Tifinagh script, a glossary, a bibliography, and an interactive quiz.
 
 ## About the content
 
-The entire content of this site is **inspired by and based on** the reference
-manual **"Manuel de Référence de la Grammaire Amazighe"** by **Juba Tala**,
-originally published here:
+The content of this site is inspired by the **"Manuel de Référence de la
+Grammaire Amazighe"** by **Juba Tala**:
 
 👉 https://adrar-inu.blogspot.com/2025/11/manuel-de-reference-de-la-grammaire.html
-
-All credit for the underlying grammatical work goes to its author, **Juba Tala**.
-This project is simply a re-presentation of that material in an accessible,
-navigable web format.
 
 ## ⚠️ A note on accuracy
 
@@ -44,8 +39,3 @@ Thank you! / Tanemmirt! / Merci!
 
 The site is a self-contained `index.html` file (HTML + CSS + JavaScript, no build
 step, no dependencies). Just open it in a browser, or serve the folder statically.
-
-## License / Credit
-
-The grammatical content is derived from the work of **Juba Tala**. Please credit
-the original author when reusing this material.
