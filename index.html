@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tajerrumt n Tmaziɣt — Manuel de Référence de la Grammaire Amazighe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Tifinagh&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   Palette: "manuscrit sous les étoiles" — nuit aubergine + clé d'or
+   ============================================================ */
+:root{
+  --night-0:#120d1e;      /* deepest background */
+  --night-1:#1a1330;      /* base background */
+  --night-2:#221a3c;      /* raised surface */
+  --night-3:#2c2350;      /* panel */
+  --line:#3a2f5e;         /* borders */
+  --gold:#f0b035;         /* saffron / clé d'or — primary accent */
+  --gold-soft:#f7cd77;
+  --cyan:#4fd4e4;         /* secondary accent */
+  --green:#43c98a;        /* positive / correct */
+  --red:#e85a4f;          /* yaz glyph / warning */
+  --ink:#efe9fb;          /* main text (strong contrast on dark) */
+  --ink-soft:#c6bce0;     /* secondary text */
+  --ink-mute:#9186b0;     /* muted */
+  --fx-display:"Bricolage Grotesque","Noto Sans","DejaVu Sans",sans-serif;
+  --fx-body:"Newsreader","Noto Serif","DejaVu Serif",serif;
+  --fx-data:"JetBrains Mono","Noto Sans Mono","DejaVu Sans Mono",monospace;
+  --fx-tif:"Noto Sans Tifinagh","DejaVu Sans",sans-serif;
+  --sbw:280px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  background:var(--night-1);
+  color:var(--ink);
+  font-family:var(--fx-body);
+  font-size:18px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ============================================================
+   AMBIENT STARFIELD BACKGROUND
+   ============================================================ */
+.sky{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(1200px 700px at 78% -8%, rgba(240,176,53,.16), transparent 60%),
+    radial-gradient(900px 600px at 10% 110%, rgba(79,212,228,.08), transparent 60%),
+    linear-gradient(180deg,#160f28 0%, var(--night-1) 40%, var(--night-0) 100%);
+}
+.stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.9}
+.stars::before,.stars::after{content:"";position:absolute;inset:-50%;
+  background-image:
+    radial-gradient(1.4px 1.4px at 20% 30%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 70% 20%, #ffe9b8, transparent),
+    radial-gradient(1px 1px at 40% 70%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 85% 60%, #fff, transparent),
+    radial-gradient(1px 1px at 55% 45%, #cfe9ff, transparent),
+    radial-gradient(1.2px 1.2px at 30% 90%, #fff, transparent),
+    radial-gradient(1px 1px at 90% 85%, #ffe9b8, transparent),
+    radial-gradient(1.3px 1.3px at 12% 55%, #fff, transparent);
+  background-repeat:repeat;background-size:520px 520px;
+  animation:drift 140s linear infinite;
+}
+.stars::after{background-size:360px 360px;opacity:.5;animation-duration:90s;animation-direction:reverse}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(-120px,-120px)}}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;
+  background:linear-gradient(90deg,var(--gold),var(--cyan));box-shadow:0 0 12px rgba(240,176,53,.6)}
+
+.shell{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{position:fixed;top:0;left:0;width:var(--sbw);height:100vh;z-index:50;
+  background:rgba(18,13,30,.86);backdrop-filter:blur(14px);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.sb-brand{padding:22px 22px 16px;border-bottom:1px solid var(--line)}
+.sb-brand .yaz{font-family:var(--fx-tif);color:var(--red);font-size:28px;line-height:1}
+.sb-brand h1{font-family:var(--fx-display);font-weight:800;font-size:19px;letter-spacing:-.01em;margin-top:6px;color:var(--gold)}
+.sb-brand p{font-family:var(--fx-data);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);margin-top:4px}
+.sb-nav{flex:1;overflow-y:auto;padding:14px 12px 30px}
+.sb-nav::-webkit-scrollbar{width:8px}
+.sb-nav::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+.sb-part{font-family:var(--fx-data);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  padding:16px 12px 6px;opacity:.85}
+.sb-link{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:9px;
+  color:var(--ink-soft);text-decoration:none;font-size:14.5px;font-family:var(--fx-display);font-weight:500;
+  transition:all .15s ease;line-height:1.25}
+.sb-link .num{font-family:var(--fx-data);font-size:11px;color:var(--ink-mute);min-width:22px}
+.sb-link:hover{background:var(--night-3);color:var(--ink)}
+.sb-link.active{background:linear-gradient(90deg,rgba(240,176,53,.16),transparent);color:var(--gold);box-shadow:inset 2px 0 0 var(--gold)}
+.sb-link.active .num{color:var(--gold)}
+
+.content{margin-left:var(--sbw);flex:1;min-width:0}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px 120px}
+
+/* Topbar (mobile) */
+.topbar{display:none;position:sticky;top:0;z-index:40;align-items:center;gap:14px;
+  padding:12px 18px;background:rgba(18,13,30,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.burger{background:var(--night-3);border:1px solid var(--line);border-radius:10px;width:42px;height:42px;
+  color:var(--gold);font-size:20px;cursor:pointer;display:grid;place-items:center}
+.topbar .tb-title{font-family:var(--fx-display);font-weight:700;font-size:15px;color:var(--gold)}
+.scrim{display:none;position:fixed;inset:0;background:rgba(9,6,16,.6);z-index:45;backdrop-filter:blur(2px)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;padding:96px 28px 70px;text-align:center;overflow:hidden}
+.hero .eyebrow{font-family:var(--fx-data);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--cyan);margin-bottom:26px}
+.key-wrap{width:120px;height:120px;margin:0 auto 30px;filter:drop-shadow(0 8px 30px rgba(240,176,53,.45))}
+.key-wrap svg{width:100%;height:100%;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+.hero h1{font-family:var(--fx-display);font-weight:800;font-size:clamp(38px,7vw,74px);line-height:.98;letter-spacing:-.03em;
+  background:linear-gradient(180deg,#fff 0%,var(--gold-soft) 60%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.hero .sub-fr{font-family:var(--fx-display);font-weight:500;font-size:clamp(16px,2.4vw,22px);color:var(--ink-soft);letter-spacing:.01em}
+.hero .motto{font-family:var(--fx-body);font-style:italic;font-size:clamp(18px,2.6vw,26px);color:var(--gold-soft);margin:34px 0 8px}
+.hero .motto2{font-family:var(--fx-data);font-size:13px;letter-spacing:.05em;color:var(--ink-mute)}
+.hero .credit{margin-top:44px;font-family:var(--fx-data);font-size:12px;color:var(--ink-mute);letter-spacing:.08em}
+.hero .credit b{color:var(--cyan);font-weight:500}
+.scroll-cue{margin-top:52px;display:inline-flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-mute);font-family:var(--fx-data);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+.scroll-cue .arrow{width:20px;height:20px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.5}50%{transform:rotate(45deg) translate(4px,4px);opacity:1}}
+
+/* ============================================================
+   SECTIONS & TYPOGRAPHY
+   ============================================================ */
+section{padding-top:70px}
+.sec-head{margin-bottom:26px}
+.sec-head .kicker{display:inline-flex;align-items:center;gap:10px;font-family:var(--fx-data);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.sec-head .kicker .glyph{font-family:var(--fx-tif);color:var(--red);font-size:16px}
+.sec-head h2{font-family:var(--fx-display);font-weight:800;font-size:clamp(28px,4.4vw,44px);line-height:1.04;letter-spacing:-.02em;color:var(--ink)}
+.sec-head h2 .kab{color:var(--gold)}
+.sec-head .lede{margin-top:12px;font-size:19px;color:var(--ink-soft);max-width:64ch}
+
+.part-divider{margin:40px 0 0;padding:54px 0 10px;text-align:center;position:relative}
+.part-divider .roman{font-family:var(--fx-data);font-size:13px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+.part-divider h3{font-family:var(--fx-display);font-weight:700;font-size:clamp(24px,3.6vw,34px);margin-top:10px;color:var(--ink)}
+.part-divider .rule{width:64px;height:3px;background:linear-gradient(90deg,var(--gold),var(--cyan));margin:18px auto 0;border-radius:3px}
+
+h4.block-title{font-family:var(--fx-display);font-weight:700;font-size:22px;margin:38px 0 14px;color:var(--gold-soft);letter-spacing:-.01em}
+p{margin:0 0 16px}
+.content a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(79,212,228,.3)}
+.kab{font-family:var(--fx-data);color:var(--gold-soft);font-weight:500}
+.ex{font-family:var(--fx-data);color:var(--cyan)}
+.phon{font-family:var(--fx-data);color:var(--ink-mute);font-style:normal}
+
+/* Card */
+.card{background:linear-gradient(180deg,var(--night-2),var(--night-1));border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin:20px 0}
+.card.reveal,.sec-head.reveal,.tbl-scroll.reveal,.grid.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.revealed{opacity:1 !important;transform:none !important}
+
+/* Callout */
+.note{border-left:3px solid var(--cyan);background:rgba(79,212,228,.07);padding:14px 18px;border-radius:0 12px 12px 0;margin:18px 0;font-size:16.5px;color:var(--ink-soft)}
+.note.warn{border-color:var(--red);background:rgba(232,90,79,.08)}
+.note.gold{border-color:var(--gold);background:rgba(240,176,53,.08)}
+.note b{color:var(--ink)}
+
+/* Lists */
+ul.clean{list-style:none;margin:8px 0 18px}
+ul.clean li{position:relative;padding-left:24px;margin-bottom:9px;color:var(--ink-soft)}
+ul.clean li::before{content:"ⵣ";position:absolute;left:0;top:1px;font-family:var(--fx-tif);color:var(--red);font-size:13px}
+ul.clean li b{color:var(--ink)}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.tbl-scroll{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:14px;background:var(--night-2)}
+.tbl-scroll::-webkit-scrollbar{height:9px}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:100%}
+th{background:rgba(240,176,53,.1);color:var(--gold-soft);font-family:var(--fx-display);font-weight:700;text-align:left;
+  padding:12px 14px;font-size:12.5px;letter-spacing:.03em;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+td{padding:11px 14px;border-bottom:1px solid rgba(58,47,94,.5);vertical-align:top;color:var(--ink-soft)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(240,176,53,.04)}
+td.k,th.k{font-family:var(--fx-data);color:var(--gold-soft)}
+td.p{font-family:var(--fx-data);color:var(--ink-mute);font-size:14px}
+td.c{font-family:var(--fx-data);color:var(--cyan)}
+td.lbl{font-family:var(--fx-display);font-weight:600;color:var(--ink);white-space:nowrap}
+.tbl-cap{font-family:var(--fx-data);font-size:12px;color:var(--ink-mute);margin:8px 2px 0;letter-spacing:.02em}
+
+/* ============================================================
+   ALPHABET GRID
+   ============================================================ */
+.alpha-detail{background:linear-gradient(135deg,var(--night-3),var(--night-2));border:1px solid var(--gold);border-radius:16px;
+  padding:22px 24px;margin:20px 0;display:flex;align-items:center;gap:26px;flex-wrap:wrap;min-height:120px;
+  box-shadow:0 0 40px rgba(240,176,53,.1)}
+.alpha-detail .big{font-family:var(--fx-data);font-size:56px;font-weight:700;color:var(--gold);line-height:1}
+.alpha-detail .tif{font-family:var(--fx-tif);font-size:46px;color:var(--cyan);line-height:1}
+.alpha-detail .meta{flex:1;min-width:200px}
+.alpha-detail .meta .name{font-family:var(--fx-display);font-weight:700;font-size:15px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.1em}
+.alpha-detail .meta .ex{font-family:var(--fx-data);font-size:20px;color:var(--gold-soft);margin-top:6px}
+.alpha-detail .divider{width:1px;align-self:stretch;background:var(--line)}
+.alpha-detail .hint{color:var(--ink-mute);font-style:italic}
+.alpha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px;margin:16px 0}
+.tile{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:var(--night-2);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all .16s ease;position:relative}
+.tile .lat{font-family:var(--fx-data);font-size:22px;font-weight:700;color:var(--ink)}
+.tile .t{font-family:var(--fx-tif);font-size:14px;color:var(--ink-mute)}
+.tile:hover{border-color:var(--gold);background:var(--night-3);transform:translateY(-3px)}
+.tile.sel{border-color:var(--gold);background:linear-gradient(180deg,rgba(240,176,53,.2),var(--night-3));box-shadow:0 0 20px rgba(240,176,53,.25)}
+.tile.sel .lat{color:var(--gold)}
+.tile.add{border-style:dashed;opacity:.85}
+.tile.add .lat{color:var(--cyan)}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 4px}
+.tab{font-family:var(--fx-display);font-weight:600;font-size:14px;padding:9px 16px;border-radius:10px;cursor:pointer;
+  background:var(--night-2);border:1px solid var(--line);color:var(--ink-soft);transition:all .15s ease}
+.tab:hover{border-color:var(--gold);color:var(--ink)}
+.tab.on{background:linear-gradient(180deg,rgba(240,176,53,.18),var(--night-3));border-color:var(--gold);color:var(--gold)}
+.panel{display:none}
+.panel.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Toggle (m/f) */
+.toggle{display:inline-flex;background:var(--night-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.toggle button{font-family:var(--fx-display);font-weight:600;font-size:13px;padding:6px 16px;border:none;border-radius:8px;cursor:pointer;background:transparent;color:var(--ink-soft)}
+.toggle button.on{background:var(--gold);color:#231a08}
+
+/* ============================================================
+   NUMBER CONVERTER
+   ============================================================ */
+.num-tool{background:linear-gradient(135deg,var(--night-3),var(--night-2));border:1px solid var(--line);border-radius:16px;padding:26px;margin:20px 0}
+.num-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.num-input{font-family:var(--fx-data);font-size:32px;font-weight:700;width:150px;padding:10px 16px;
+  background:var(--night-0);border:1px solid var(--line);border-radius:12px;color:var(--gold);text-align:center}
+.num-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,176,53,.2)}
+.num-out{background:var(--night-0);border:1px dashed var(--line);border-radius:12px;padding:18px 20px;min-height:64px;display:flex;align-items:center}
+.num-out .word{font-family:var(--fx-data);font-size:22px;color:var(--gold-soft);line-height:1.4}
+.num-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{font-family:var(--fx-data);font-size:13px;padding:6px 12px;border-radius:20px;background:var(--night-2);border:1px solid var(--line);color:var(--ink-soft);cursor:pointer}
+.chip:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ============================================================
+   GLOSSARY
+   ============================================================ */
+.gloss-search{width:100%;font-family:var(--fx-data);font-size:16px;padding:14px 18px;background:var(--night-2);
+  border:1px solid var(--line);border-radius:12px;color:var(--ink);margin:8px 0 18px}
+.gloss-search:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,176,53,.15)}
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.gloss-item{background:var(--night-2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;transition:border-color .15s}
+.gloss-item:hover{border-color:var(--gold)}
+.gloss-item .kt{font-family:var(--fx-data);font-size:16px;color:var(--gold-soft);font-weight:500}
+.gloss-item .fr{font-size:15px;color:var(--ink-soft)}
+.gloss-count{font-family:var(--fx-data);font-size:12px;color:var(--ink-mute);margin-bottom:6px}
+.gloss-empty{color:var(--ink-mute);font-style:italic;padding:20px 0}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.quiz-card{background:linear-gradient(180deg,var(--night-2),var(--night-1));border:1px solid var(--line);border-radius:16px;padding:26px;margin:20px 0}
+.quiz-q{font-family:var(--fx-display);font-weight:700;font-size:19px;color:var(--ink);margin-bottom:16px}
+.quiz-q .qn{font-family:var(--fx-data);color:var(--gold);font-size:14px;margin-right:8px}
+.quiz-opts{display:grid;gap:10px}
+.qopt{text-align:left;font-family:var(--fx-body);font-size:17px;padding:13px 18px;border-radius:11px;cursor:pointer;
+  background:var(--night-3);border:1px solid var(--line);color:var(--ink-soft);transition:all .14s ease}
+.qopt:hover:not(.locked){border-color:var(--gold);color:var(--ink)}
+.qopt.correct{border-color:var(--green);background:rgba(67,201,138,.14);color:#c8f5df}
+.qopt.wrong{border-color:var(--red);background:rgba(232,90,79,.14);color:#f8c9c4}
+.qopt .kab{font-family:var(--fx-data)}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px;flex-wrap:wrap}
+.quiz-prog{font-family:var(--fx-data);font-size:13px;color:var(--ink-mute)}
+.btn{font-family:var(--fx-display);font-weight:600;font-size:15px;padding:11px 24px;border-radius:11px;cursor:pointer;border:1px solid var(--gold);
+  background:var(--gold);color:#231a08;transition:all .15s}
+.btn:hover{background:var(--gold-soft)}
+.btn.ghost{background:transparent;color:var(--gold)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.quiz-score{text-align:center;padding:24px}
+.quiz-score .big{font-family:var(--fx-display);font-weight:800;font-size:52px;color:var(--gold)}
+.quiz-score .msg{font-size:19px;color:var(--ink-soft);margin:8px 0 18px}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{border-top:1px solid var(--line);margin-top:80px;padding:44px 28px;text-align:center}
+footer .yaz{font-family:var(--fx-tif);color:var(--red);font-size:34px}
+footer .motto{font-family:var(--fx-body);font-style:italic;color:var(--gold-soft);font-size:20px;margin:14px 0 6px}
+footer .meta{font-family:var(--fx-data);font-size:12px;color:var(--ink-mute);letter-spacing:.06em}
+footer .meta a{color:var(--cyan)}
+
+/* back to top */
+.totop{position:fixed;right:22px;bottom:22px;width:48px;height:48px;border-radius:50%;background:var(--night-3);
+  border:1px solid var(--gold);color:var(--gold);cursor:pointer;display:none;place-items:center;z-index:40;font-size:20px;
+  box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.totop.show{display:grid}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:940px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .content{margin-left:0}
+  .topbar{display:flex}
+  .scrim.show{display:block}
+  body{font-size:17px}
+  .wrap{padding:0 18px 90px}
+  .hero{padding:56px 20px 50px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+  .card.reveal,.sec-head.reveal,.tbl-scroll.reveal,.grid.reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="sky"></div>
+<div class="stars"></div>
+<div class="progress" id="progress"></div>
+
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="yaz">ⵣ</div>
+      <h1>Tajerrumt n Tmaziɣt</h1>
+      <p>Manuel de grammaire</p>
+    </div>
+    <nav class="sb-nav" id="sbnav">
+      <a class="sb-link" href="#hero"><span class="num">◆</span>Accueil</a>
+      <a class="sb-link" href="#preface"><span class="num">§</span>Tazwart · Préface</a>
+
+      <div class="sb-part">I · Écriture &amp; Phonologie</div>
+      <a class="sb-link" href="#alphabet"><span class="num">1.0</span>Agemmay · L'alphabet</a>
+      <a class="sb-link" href="#regles"><span class="num">1.1</span>Ilugan · Règles phonologiques</a>
+      <a class="sb-link" href="#ponctuation"><span class="num">2.0</span>Asigez · Ponctuation</a>
+      <a class="sb-link" href="#tamsertit"><span class="num">3.0</span>Tamsertit · Assimilation</a>
+
+      <div class="sb-part">II · Morphologie</div>
+      <a class="sb-link" href="#nom"><span class="num">4.0</span>Isem · Le nom</a>
+      <a class="sb-link" href="#annexion"><span class="num">4.1</span>Addad amaruz · Annexion</a>
+      <a class="sb-link" href="#verbe"><span class="num">5.0</span>Amyag · Le verbe</a>
+      <a class="sb-link" href="#pronoms"><span class="num">6.0</span>Imqimen · Les pronoms</a>
+
+      <div class="sb-part">III · Syntaxe &amp; Textes</div>
+      <a class="sb-link" href="#phrase"><span class="num">7.0</span>Tafyirt · La phrase</a>
+      <a class="sb-link" href="#connecteurs"><span class="num">7.1</span>Tizdit · Trait d'union</a>
+      <a class="sb-link" href="#homonymes"><span class="num">7.2</span>Iynisam · Homonymes</a>
+      <a class="sb-link" href="#textes"><span class="num">8.0</span>Aḍris · Types de textes</a>
+
+      <div class="sb-part">Annexes</div>
+      <a class="sb-link" href="#nombres"><span class="num">A</span>Imḍanen · Les nombres</a>
+      <a class="sb-link" href="#tifinagh"><span class="num">B</span>Tifinaɣ · L'alphabet</a>
+      <a class="sb-link" href="#glossaire"><span class="num">C</span>Tamawalt · Glossaire</a>
+      <a class="sb-link" href="#biblio"><span class="num">✦</span>Tiɣbula · Bibliographie</a>
+      <a class="sb-link" href="#quiz"><span class="num">?</span>Asqerdec · Quiz</a>
+    </nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="content">
+    <div class="topbar">
+      <button class="burger" id="burger" aria-label="Menu">☰</button>
+      <span class="tb-title">Tajerrumt n Tmaziɣt</span>
+    </div>
+
+    <!-- HERO -->
+    <section id="hero" class="hero" style="padding-top:60px">
+      <div class="eyebrow">Aide-mémoire · Adrar-inu · Wamber 2025</div>
+      <div class="key-wrap" aria-hidden="true">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffe6a8"/><stop offset=".5" stop-color="#f0b035"/><stop offset="1" stop-color="#c8871a"/>
+            </linearGradient>
+          </defs>
+          <circle cx="66" cy="30" r="20" fill="none" stroke="url(#g)" stroke-width="9"/>
+          <rect x="61" y="46" width="9" height="42" rx="3" fill="url(#g)"/>
+          <rect x="61" y="72" width="20" height="8" rx="3" fill="url(#g)"/>
+          <rect x="61" y="82" width="14" height="8" rx="3" fill="url(#g)"/>
+          <text x="66" y="35" font-family="Noto Sans Tifinagh, sans-serif" font-size="16" fill="#7a4d0a" text-anchor="middle">ⵣ</text>
+        </svg>
+      </div>
+      <h1>Grammaire<br>Amazighe</h1>
+      <div class="sub-fr">Manuel de référence · Tajerrumt n Teqbaylit</div>
+      <div class="motto">« Win yebɣan Tamaziɣt, yissin tira-s »</div>
+      <div class="motto2">Qui aime le tamazight doit en connaître l'écriture</div>
+      <div class="credit">D'après le manuel de <b>Juba Tala</b> · adrar-inu.blogspot.com</div>
+      <div class="scroll-cue">Bdu tiɣuri · Commencer<span class="arrow"></span></div>
+    </section>
+
+    <div class="wrap">
+
+      <!-- PREFACE -->
+      <section id="preface">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>Tazwart</span>
+          <h2>Préface</h2>
+          <p class="lede">Un aide-mémoire structuré pour rassembler, en un seul document clair, l'essentiel de la grammaire amazighe — de la phonologie à la typologie des textes.</p>
+        </div>
+        <div class="card reveal">
+          <p>Les ressources de mémorisation abondent dans toutes les langues, mais manquaient en tamazight. Ce manuel réunit sur un même plan chaque élément de la grammaire : le nom (<span class="kab">isem</span>), le verbe (<span class="kab">amyag</span>), le complément (<span class="kab">asemmad</span>), le pronom (<span class="kab">amqim</span>), la phrase (<span class="kab">tafyirt</span>) et le texte (<span class="kab">aḍris</span>).</p>
+          <p>Il s'adresse autant à celles et ceux qui savent déjà — pour vérifier ou réorganiser leurs connaissances — qu'aux personnes qui apprennent et souhaitent se construire une vision d'ensemble avant d'entrer dans le détail.</p>
+          <p style="margin-bottom:0">C'est un travail inédit, libre et gratuit. En annexe, un glossaire (<span class="kab">tamawalt</span>) éclaire chaque terme technique.</p>
+        </div>
+        <div class="note gold reveal">— <b>Juba Tala</b>. « Ma ulac Tamaziɣt, ulac ulac ulac » — S'il n'y a pas de tamazight, il n'y a rien.</div>
+      </section>
+
+      <!-- ============ PART I ============ -->
+      <div class="part-divider reveal">
+        <div class="roman">Aḥric wis 1</div>
+        <h3>Fondamentaux de l'écriture &amp; de la phonologie</h3>
+        <div class="rule"></div>
+      </div>
+
+      <!-- ALPHABET -->
+      <section id="alphabet">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>1.0 · Agemmay</span>
+          <h2>L'alphabet <span class="kab">Agemmay</span></h2>
+          <p class="lede">L'alphabet latin standardisé du tamazight. Touchez une lettre pour voir son nom, son équivalent tifinagh et des exemples.</p>
+        </div>
+
+        <div class="alpha-detail reveal" id="alphaDetail">
+          <div class="big" id="adLat">a</div>
+          <div class="tif" id="adTif">ⴰ</div>
+          <div class="divider"></div>
+          <div class="meta">
+            <div class="name" id="adName">isem · a, aɣra</div>
+            <div class="ex" id="adEx">aman · azal</div>
+          </div>
+        </div>
+        <div class="alpha-grid" id="alphaGrid"></div>
+
+        <h4 class="block-title">Lettres additionnelles <span class="kab" style="font-size:16px">Isekkilen-nniḍen</span></h4>
+        <p>Les caractères <span class="kab">ṛ</span>, <span class="kab">ṣ</span> (variantes emphatiques de r et s), ainsi que <span class="kab">o</span>, <span class="kab">p</span>, <span class="kab">v</span>, complètent l'alphabet de base. On n'emploie <span class="kab">ṛ</span> et <span class="kab">ṣ</span> que lorsqu'ils sont indispensables pour distinguer des homographes :</p>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Avec emphase</th><th>Sens</th><th>Sans emphase</th><th>Sens</th></tr></thead>
+            <tbody>
+              <tr><td class="k">fuṛṛ</td><td>cuire</td><td class="k">furr</td><td>examiner</td></tr>
+              <tr><td class="k">faṛes</td><td>profiter</td><td class="k">fares</td><td>produire</td></tr>
+              <tr><td class="k">ṣṣif</td><td>l'été</td><td class="k">ssif</td><td>l'épée</td></tr>
+              <tr><td class="k">aṣufi</td><td>soufi</td><td class="k">asufi</td><td>arrosage</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- REGLES PHONO -->
+      <section id="regles">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>1.1 · Ilugan igejdanen</span>
+          <h2>Règles phonologiques <span class="kab">Ilugan</span></h2>
+          <p class="lede">Sept principes gouvernent la prononciation et l'orthographe. Certains phénomènes existent à l'oral mais ne s'écrivent pas.</p>
+        </div>
+
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Principe</th><th>Description</th><th>Exemples</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Imesli d usekkil<br><span class="p">un son = une lettre</span></td><td>Chaque son se note par un seul caractère, quelle que soit sa position dans le mot.</td><td class="c">—</td></tr>
+              <tr><td class="lbl">Tussda<br><span class="p">gémination</span></td><td>Redoublement d'une consonne, marqué en doublant la lettre. Lexicale (inhérente) ou grammaticale (morphologique).</td><td class="c">tameṭṭut · yerreẓ (&lt; rẓ)</td></tr>
+              <tr><td class="lbl">Tiggeɣt d tzenzeɣt<br><span class="p">occlusion / spirantisation</span></td><td>b, d, g, k, t ont deux réalisations (dure / douce). <b style="color:var(--ink)">Non distinctive → non écrite.</b></td><td class="c">non notée</td></tr>
+              <tr><td class="lbl">Tanɣit<br><span class="p">labio-vélarisation</span></td><td>g, k, ɣ, x, q peuvent s'arrondir. <b style="color:var(--ink)">Non distinctive → non écrite.</b></td><td class="c">aglim · akbal · alɣem</td></tr>
+              <tr><td class="lbl">Tazegnaggaɣt<br><span class="p">affrication</span></td><td>Les anciennes affriquées ţ [ts] et ž [dz] s'écrivent désormais <b style="color:var(--ink)">tt</b> et <b style="color:var(--ink)">zz</b>. En fin de mot : un simple <b style="color:var(--ink)">t</b>.</td><td class="c">Ttu · Lezzayer · tidet</td></tr>
+              <tr><td class="lbl">Tufayt<br><span class="p">emphase</span></td><td>Trois emphatiques distinctives : <b style="color:var(--ink)">ḍ, ṭ, ẓ</b>.</td><td class="c">aḍar · iṭij · aẓar</td></tr>
+              <tr><td class="lbl">Tiɣri n yilem<br><span class="p">voyelle neutre « e »</span></td><td>Le « e » n'est pas une vraie voyelle : simple aide à la lecture. Jamais en fin de mot ; écrit au début de certains verbes ; insère entre 3 consonnes.</td><td class="c">ečč · eg · azger</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note reveal">Les trois <b>voyelles pleines</b> sont <span class="kab">a</span>, <span class="kab">i</span>, <span class="kab">u</span>. Le <span class="kab">e</span> est un artifice orthographique — comprendre cela est essentiel pour maîtriser la structure des racines.</div>
+      </section>
+
+      <!-- PONCTUATION -->
+      <section id="ponctuation">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>2.0 · Asigez</span>
+          <h2>La ponctuation <span class="kab">Asigez</span></h2>
+          <p class="lede">Elle transcrit à l'écrit les pauses, les intonations et les intentions présentes à l'oral.</p>
+        </div>
+
+        <h4 class="block-title">Les majuscules <span class="kab" style="font-size:16px">Isekkilen imeqqranen</span></h4>
+        <ul class="clean">
+          <li><b>Au début d'une phrase</b> — qui se termine par un point (.), un point d'interrogation (?) ou d'exclamation (!). <span class="ex">Yečča, yeswa. · Ɣur-i yiwen n umdakel.</span></li>
+          <li><b>Pour les noms propres</b> — personnes, lieux, entités uniques. <span class="ex">Mammeri · Fransa · Tizi</span></li>
+          <li><b>À l'état d'annexion</b>, seule la première lettre du premier mot prend la majuscule. <span class="ex">Tamurt n Yigawawen</span></li>
+        </ul>
+
+        <h4 class="block-title">Signes de ponctuation <span class="kab" style="font-size:16px">Yizamulen</span></h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Signe</th><th>Nom kabyle</th><th>Français</th></tr></thead>
+            <tbody>
+              <tr><td class="c" style="font-size:18px">.</td><td class="k">aqqa / aɛeqqa</td><td>point</td></tr>
+              <tr><td class="c" style="font-size:18px">,</td><td class="k">ticcert</td><td>virgule</td></tr>
+              <tr><td class="c" style="font-size:18px">;</td><td class="k">ticcert aqqa</td><td>point-virgule</td></tr>
+              <tr><td class="c" style="font-size:18px">:</td><td class="k">sin n waqqayen</td><td>deux-points</td></tr>
+              <tr><td class="c" style="font-size:18px">?</td><td class="k">aqqa n tuttra</td><td>point d'interrogation</td></tr>
+              <tr><td class="c" style="font-size:18px">!</td><td class="k">aqqa n ubhat</td><td>point d'exclamation</td></tr>
+              <tr><td class="c" style="font-size:18px">…</td><td class="k">krad n waqqayen</td><td>points de suspension</td></tr>
+              <tr><td class="c" style="font-size:18px">( )</td><td class="k">gar tacciwin</td><td>parenthèses</td></tr>
+              <tr><td class="c" style="font-size:18px">« »</td><td class="k">gar tuccar</td><td>guillemets</td></tr>
+              <tr><td class="c" style="font-size:18px">[ ]</td><td class="k">acciwen</td><td>crochets</td></tr>
+              <tr><td class="c" style="font-size:18px">{ }</td><td class="k">aseṭṭef</td><td>accolades</td></tr>
+              <tr><td class="c" style="font-size:18px">/</td><td class="k">ajerrid amezlagu</td><td>barre oblique</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note warn reveal">La ponctuation change le sens. <span class="ex">Tameṭṭut, n temdint.</span> (La femme, celle de la ville) ≠ <span class="ex">Tameṭṭut n temdint…</span> (La femme de la ville). — <span class="ex">D kečč !</span> surprise · <span class="ex">D kečč ?</span> question · <span class="ex">D kečč.</span> déclaration.</div>
+
+        <h4 class="block-title">Noms propres : deux conventions</h4>
+        <ul class="clean">
+          <li><b>Transcription phonétique</b> — toponymes composés écrits comme prononcés localement. <span class="ex">Iɣil Ɛli · Tizi Uzzu</span></li>
+          <li><b>Usage établi</b> — noms de personnes et lieux internationaux gardent leur graphie consacrée. <span class="ex">Mouloud Mammeri · Paris · New York</span>. Certains sont intégrés phonétiquement : <span class="ex">Fransa · Lalman</span>.</li>
+        </ul>
+      </section>
+
+      <!-- TAMSERTIT -->
+      <section id="tamsertit">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>3.0 · Tamsertit</span>
+          <h2>Assimilation <span class="kab">Tamsertit</span></h2>
+          <p class="lede">Modifications phonétiques à la jonction des mots ou à l'intérieur d'un mot. L'orthographe garde la forme de base ; à l'oral, les sons s'influencent.</p>
+        </div>
+
+        <div class="note reveal">Règle d'écriture : <b>on garde toujours la forme de base (l'étymon)</b>. Ces variations concernent la prononciation, pas l'écriture standard.</div>
+
+        <div class="tabs" id="tsTabs">
+          <button class="tab on" data-t="t1">Entre les mots</button>
+          <button class="tab" data-t="t2">Dans un mot</button>
+          <button class="tab" data-t="t3">Rencontre de voyelles</button>
+          <button class="tab" data-t="t4">Mobilité du « e »</button>
+        </div>
+
+        <div class="panel on" id="t1">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Contexte</th><th>On écrit</th><th>On peut prononcer</th></tr></thead>
+              <tbody>
+                <tr><td class="lbl">n + t- (fém.)</td><td class="k">tasa n tmeṭṭut</td><td class="p">[tasa-ttmeṭṭut]</td></tr>
+                <tr><td class="lbl">n + w/u (annexion)</td><td class="k">awal n urgaz · aman n wasif</td><td class="p">[awal-wwergaz] · [aman-bbwasif]</td></tr>
+                <tr><td class="lbl">n + w (pronom)</td><td class="k">awal n wid i iceṭren</td><td class="p">[awal bbwid igceṭṛen]</td></tr>
+                <tr><td class="lbl">n + y (annexion)</td><td class="k">tajmaɛt n yirgazen</td><td class="p">[tajmaɛt-yyergazen] · [ggergazen]</td></tr>
+                <tr><td class="lbl">n + consonne</td><td class="k">tamurt n Faḍma · ddin n Muḥemmed</td><td class="p">[tamurt-f-Faḍma] · [din m-Muḥemmed]</td></tr>
+                <tr><td class="lbl">n + R / L</td><td class="k">awal n Rebbi · tagennurt n lalla</td><td class="p">[awal-r-Ṛebbi] · [tagennurt-l-lalla]</td></tr>
+                <tr><td class="lbl">am + w</td><td class="k">am win · am wakal</td><td class="p">[am-min] · [am-makal]</td></tr>
+                <tr><td class="lbl">d (copule) + t</td><td class="k">argaz d tmeṭṭut</td><td class="p">[argaz t-tmeṭṭut]</td></tr>
+                <tr><td class="lbl">ad + t- / n-</td><td class="k">ad tawiḍ · ad nawi</td><td class="p">[aţ-ţawiḍ] · [an-nawi]</td></tr>
+                <tr><td class="lbl">ad + d (directionnel)</td><td class="k">ad d-tawi</td><td class="p">[add-awi]</td></tr>
+                <tr><td class="lbl">relatif ay + y/i</td><td class="k">ay yecca</td><td class="p">[aggecca]</td></tr>
+                <tr><td class="lbl">relatif i + y/i</td><td class="k">d ayen i yenwa</td><td class="p">[d ayen i-genwa]</td></tr>
+                <tr><td class="lbl">ɣef + w/u</td><td class="k">ɣef wakal · ɣef uxxam</td><td class="p">[ɣef-fakal] · [ɣef-fexxam]</td></tr>
+                <tr><td class="lbl">seg / deg + w/u</td><td class="k">seg uxxam · deg waman</td><td class="p">[seg-gexxam] · [deg-gwaman]</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="t2">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Contexte</th><th>On écrit</th><th>On peut prononcer</th></tr></thead>
+              <tbody>
+                <tr><td class="lbl">ḍ/d + t (fém.)</td><td class="k">tayaziḍt · tabridt</td><td class="p">[tayaziṭ] · [tabriṭ]</td></tr>
+                <tr><td class="lbl">s + d</td><td class="k">sder</td><td class="p">[zder] · [zzer]</td></tr>
+                <tr><td class="lbl">l + d</td><td class="k">ldiɣ · seldazekka</td><td class="p">[lliɣ] · [sellazekka]</td></tr>
+                <tr><td class="lbl">yy (étymologique)</td><td class="k">ayyur</td><td class="p">[aggur]</td></tr>
+                <tr><td class="lbl">ww (étymologique)</td><td class="k">iɛwwamen</td><td class="p">[iɛebbwamen]</td></tr>
+                <tr><td class="lbl">ww (dérivation)</td><td class="k">rewwel · awway</td><td class="p">[reggwel] · [aggay]</td></tr>
+                <tr><td class="lbl">s (factitif) + c/č/j/ǧ/z</td><td class="k">sucef · sečč · suji · siǧǧew · sizdeg</td><td class="p">[cucef] · [cečč] · [cuji] · [ciǧǧew] · [zizdeg]</td></tr>
+                <tr><td class="lbl">s (prép.) + d</td><td class="k">sdat · sdeffir</td><td class="p">[zdat] · [zdeffir]</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h4 class="block-title">Lénition &amp; renforcement</h4>
+          <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="card" style="margin:0">
+              <b style="color:var(--gold-soft);font-family:var(--fx-display)">Sons affaiblis · Imesla i yettalwin</b>
+              <ul class="clean" style="margin-top:10px">
+                <li>k &gt; y : <span class="ex">takerza → [tayerza]</span></li>
+                <li>g &gt; y : <span class="ex">tuga → [tuya]</span></li>
+              </ul>
+            </div>
+            <div class="card" style="margin:0">
+              <b style="color:var(--gold-soft);font-family:var(--fx-display)">Sons renforcés · Imesla i yettɣaren</b>
+              <ul class="clean" style="margin-top:10px">
+                <li><span class="ex">yewwi → [yebbwi] · [yeggwi]</span></li>
+                <li><span class="ex">yewweḍ → [yebbweḍ]</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="t3">
+          <p>Deux voyelles ne peuvent se suivre à l'oral : la première est élidée, mais <b>maintenue à l'écrit</b>.</p>
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>On écrit</th><th>On prononce</th></tr></thead>
+              <tbody>
+                <tr><td class="k">Ur yufi ara</td><td class="p">[ur yufara]</td></tr>
+                <tr><td class="k">Ur d-yenni ara</td><td class="p">[ur d-yennara]</td></tr>
+                <tr><td class="k">Akka i as-nniɣ</td><td class="p">[akk-i s-nniɣ]</td></tr>
+                <tr><td class="k">Yesseɣli izem</td><td class="p">[yesseɣl-izem]</td></tr>
+                <tr><td class="k">Yeswa aman</td><td class="p">[yesw-aman]</td></tr>
+                <tr><td class="k">Yaru urrifen-is !</td><td class="p">[yar-urrifn-is]</td></tr>
+                <tr><td class="k">Ad yebnu axxam</td><td class="p">[ad yebn-axxam]</td></tr>
+                <tr><td class="k">Mi ara d-yuɣal…</td><td class="p">[m-ara d-yuɣal]</td></tr>
+                <tr><td class="k">Ma ur yelli…</td><td class="p">[m-ur yelli]</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="t4">
+          <p>La position du <span class="kab">e</span> varie à l'oral selon les affixes, mais reste <b>fixe à l'écrit</b> (elle suit le radical).</p>
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>On écrit</th><th>On prononce</th></tr></thead>
+              <tbody>
+                <tr><td class="k">yezger → yezger-d</td><td class="p">[izegr-edd]</td></tr>
+                <tr><td class="k">zegren → zegren-as</td><td class="p">[zgern-as]</td></tr>
+                <tr><td class="k">iles → iles-nsen</td><td class="p">[ils-ensen]</td></tr>
+                <tr><td class="k">alɣem → alɣem-nni</td><td class="p">[aleɣm-enni]</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PART II ============ -->
+      <div class="part-divider reveal">
+        <div class="roman">Aḥric wis 2</div>
+        <h3>Morphologie · Les classes de mots</h3>
+        <div class="rule"></div>
+      </div>
+
+      <!-- NOM -->
+      <section id="nom">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>4.0 · Isem</span>
+          <h2>Le nom <span class="kab">Isem</span></h2>
+          <p class="lede">Le nom désigne un être, une chose, un lieu ou un concept. Il varie en genre, en nombre et — trait caractéristique — en état.</p>
+        </div>
+
+        <h4 class="block-title">Types de noms</h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Type</th><th>Kabyle</th><th>Définition</th><th>Exemples</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Concret</td><td class="k">akmam</td><td>Entité tangible</td><td class="c">adlis · izem</td></tr>
+              <tr><td class="lbl">Abstrait</td><td class="k">amadwan</td><td>Idée, concept, sentiment</td><td class="c">tidet · laẓ</td></tr>
+              <tr><td class="lbl">Propre</td><td class="k">amaẓlay</td><td>Entité unique</td><td class="c">Dda Lmulud · Lmerruk</td></tr>
+              <tr><td class="lbl">De parenté</td><td class="k">n timmarewt</td><td>Membres de la famille</td><td class="c">baba · yemma</td></tr>
+              <tr><td class="lbl">Simple</td><td class="k">aḥerfi</td><td>Un seul radical</td><td class="c">aɣrum</td></tr>
+              <tr><td class="lbl">Composé</td><td class="k">uddis</td><td>Deux mots ou plus</td><td class="c">amagraman</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="block-title">Catégories morphologiques</h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Catégorie</th><th>Valeurs</th><th>Exemples</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Genre <span class="p">Tawsit</span></td><td>Masculin (<span class="kab">amalay</span>) · Féminin (<span class="kab">unti</span>, souvent t-…-t)</td><td class="c">argaz, fad · tameṭṭut, tabrat</td></tr>
+              <tr><td class="lbl">Nombre <span class="p">Amḍan</span></td><td>Singulier (<span class="kab">asuf</span>) · Pluriel (<span class="kab">asget</span>)</td><td class="c">axxam · ixxamen</td></tr>
+              <tr><td class="lbl">État <span class="p">Addad</span></td><td>Libre (<span class="kab">ilelli</span>) · Annexion (<span class="kab">amaruz</span>)</td><td class="c">Argaz yewweḍ-d · Yewweḍ-d urgaz</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ANNEXION -->
+      <section id="annexion">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>4.1 · Addad amaruz</span>
+          <h2>L'état d'annexion <span class="kab">Addad amaruz</span></h2>
+          <p class="lede">Mécanisme syntaxique clé : le nom change de forme pour marquer sa dépendance grammaticale (verbe, préposition, autre nom).</p>
+        </div>
+
+        <h4 class="block-title">Quand le nom passe à l'annexion</h4>
+        <ul class="clean">
+          <li><b>Sujet postposé au verbe</b> : <span class="ex">Yewt-d ubruri.</span> (La grêle est tombée)</li>
+          <li><b>Après certaines prépositions</b> : <span class="ex">Yekkat s wuzzal.</span> (Il frappe avec de l'acier)</li>
+          <li><b>Complément d'un nom ou d'un nombre</b> : <span class="ex">tamurt n umalu · sin n wussan · Tizi Uzzu</span></li>
+        </ul>
+
+        <div class="note warn reveal"><b>Le double rôle de « s »</b> — Toutes les prépositions ne régissent pas l'annexion. <span class="ex">Yewt-it s ufus</span> (avec la main → annexion) vs <span class="ex">Yewt-it s afus</span> (sur la main → état libre). Régissent l'annexion : <span class="kab">s</span> (instrumental), <span class="kab">ɣer, deg, n</span>. Régissent l'état libre : <span class="kab">s</span> (directionnel), <span class="kab">ar, war, mebla</span>.</div>
+
+        <h4 class="block-title">Exceptions <span class="kab" style="font-size:16px">Ur yettbeddilen ara</span></h4>
+        <ul class="clean">
+          <li>Noms masculins à consonne initiale : <span class="ex">fad · laẓ</span></li>
+          <li>Féminins courts : <span class="ex">tala · tizi · taddart</span></li>
+          <li>Féminins en tu- : <span class="ex">tudert · turet</span></li>
+        </ul>
+
+        <h4 class="block-title">Règles de formation <span class="kab" style="font-size:16px">Asirew n waddad amaruz</span></h4>
+        <div class="tabs" id="anxTabs">
+          <button class="tab on" data-t="am">Masculin · Amalay</button>
+          <button class="tab" data-t="un">Féminin · Unti</button>
+        </div>
+        <div class="panel on" id="am">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Forme libre</th><th>Condition</th><th>Changement</th><th>Exemple</th></tr></thead>
+              <tbody>
+                <tr><td class="k">u-</td><td>—</td><td class="c">u &gt; wu</td><td class="k">udem &gt; wudem · uzzal &gt; wuzzal</td></tr>
+                <tr><td class="k">i-</td><td>—</td><td class="c">i &gt; yi</td><td class="k">izem &gt; yizem</td></tr>
+                <tr><td class="k">consonne-</td><td>—</td><td class="c">aucun</td><td class="k">fad &gt; fad · laẓ &gt; laẓ</td></tr>
+                <tr><td class="k">a-</td><td>monolitère / générique</td><td class="c">a &gt; wa</td><td class="k">aḍu &gt; waḍu · aman &gt; waman</td></tr>
+                <tr><td class="k">a-</td><td>pluriel « amasay » (mixte)</td><td class="c">a &gt; wa</td><td class="k">asif &gt; wasif</td></tr>
+                <tr><td class="k">a-</td><td>voyelle initiale stable au pluriel</td><td class="c">a &gt; wa</td><td class="k">awal &gt; wawal</td></tr>
+                <tr><td class="k">a-</td><td>voyelle initiale change au pluriel</td><td class="c">a &gt; u</td><td class="k">argaz &gt; urgaz · axxam &gt; uxxam</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel" id="un">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Forme libre</th><th>Condition</th><th>Changement</th><th>Exemple</th></tr></thead>
+              <tbody>
+                <tr><td class="k">tu-</td><td>—</td><td class="c">aucun</td><td class="k">tudert &gt; tudert · tumert &gt; tumert</td></tr>
+                <tr><td class="k">ta- / ti-</td><td>monolitère / court</td><td class="c">aucun</td><td class="k">tala · tizi · taddart</td></tr>
+                <tr><td class="k">ta- / ti-</td><td>+ une seule consonne</td><td class="c">ta &gt; t · ti &gt; t</td><td class="k">tamaziɣt &gt; tmaziɣt · tilelli &gt; tlelli</td></tr>
+                <tr><td class="k">ta- / ti-</td><td>+ deux consonnes</td><td class="c">ta &gt; te · ti &gt; te</td><td class="k">tamɣart &gt; temɣart · tislit &gt; teslit</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VERBE -->
+      <section id="verbe">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>5.0 · Amyag</span>
+          <h2>Le verbe <span class="kab">Amyag</span></h2>
+          <p class="lede">Noyau de la phrase verbale. Il se conjugue en personne, nombre, temps et aspect à partir d'un radical (<span class="kab">afeggag</span>) et d'affixes.</p>
+        </div>
+
+        <div class="card reveal">
+          <b style="color:var(--gold-soft);font-family:var(--fx-display)">Structure</b>
+          <p style="margin:10px 0 0"><span class="ex" style="font-size:20px">turgamt</span> = <span class="kab">t-</span> (2ᵉ p. fém.) + <span class="kab">urga</span> (radical de <em>argu</em>) + <span class="kab">-mt</span> (pluriel).</p>
+          <p style="margin:10px 0 0">Particules de direction : <span class="kab">d</span> (vers ici) → <span class="ex">iruḥ-d</span> · <span class="kab">n</span> (vers là-bas) → <span class="ex">iruḥ-n</span>.</p>
+        </div>
+
+        <h4 class="block-title">Classification</h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Axe</th><th>Valeur</th><th>Kabyle</th><th>Exemple</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl" rowspan="2">Type</td><td>Régulier</td><td class="k">alugan</td><td class="c">kcem → kecmeɣ / ad kecmeɣ</td></tr>
+              <tr><td>Irrégulier</td><td class="k">arlugan</td><td class="c">afeg → ufgeɣ / ad afgeɣ</td></tr>
+              <tr><td class="lbl" rowspan="2">Groupe</td><td>D'action</td><td class="k">n tigawt</td><td class="c">bedd · lmed</td></tr>
+              <tr><td>D'état / qualité</td><td class="k">n tɣara</td><td class="c">ismiḍ · uzur</td></tr>
+              <tr><td class="lbl" rowspan="2">Transitivité</td><td>Transitif</td><td class="k">amsukk</td><td class="c">Yettak laẓ aɣrum</td></tr>
+              <tr><td>Intransitif</td><td class="k">aremsukk</td><td class="c">qqim</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="block-title">Formes verbales</h4>
+        <p>Forme simple (<span class="kab">taḥerfit</span>) vs intensive / d'habitude (<span class="kab">tussidt</span>), souvent par gémination : <span class="ex">kcem → keččem</span> · <span class="ex">ali → ttali</span>.</p>
+
+        <h4 class="block-title">Le participe <span class="kab" style="font-size:16px">Amaɣun</span></h4>
+        <p>Forme verbale invariable qui construit les propositions relatives.</p>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Participe</th><th>Affirmatif <span class="p">(ilaw)</span></th><th>Négatif <span class="p">(ibaw)</span></th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Aoriste <span class="p">n wurmir</span></td><td class="c">ara yeččen</td><td class="c">—</td></tr>
+              <tr><td class="lbl">Passé <span class="p">n yizri</span></td><td class="c">yeččan</td><td class="c">ur nečči ara</td></tr>
+              <tr><td class="lbl">Aoriste intensif <span class="p">n wurmir ussid</span></td><td class="c">itetten</td><td class="c">ur ntett ara</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="block-title">Dérivation verbale <span class="kab" style="font-size:16px">Tasuddimt</span></h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Dérivation</th><th>Kabyle</th><th>Préfixe(s)</th><th>Exemple</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Factitif <span class="p">« faire faire »</span></td><td class="k">aswaɣ</td><td class="c">s- · ss- · ssu-</td><td class="k">kcem → ssekcem</td></tr>
+              <tr><td class="lbl">Passif</td><td class="k">attwaɣ</td><td class="c">ttu- · ttwa- · tt- · mm- · n-</td><td class="k">krez → ttwakrez</td></tr>
+              <tr><td class="lbl">Réciproque</td><td class="k">amyaɣ</td><td class="c">m- · myu-</td><td class="k">beddel → mbeddal</td></tr>
+              <tr><td class="lbl">Forme complexe</td><td class="k">tuddist</td><td class="c">dérivée d'une dérivée</td><td class="k">efk → nnefk → ttunefk</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="block-title">Temps &amp; modes <span class="kab" style="font-size:16px">Timeẓra</span></h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Mode</th><th>Forme</th><th>Exemple</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl" rowspan="2">Impératif <span class="p">Anaḍ</span></td><td>simple</td><td class="c">awi-t yid-k !</td></tr>
+              <tr><td>intensif</td><td class="c">Keččem-d sya ɣer da.</td></tr>
+              <tr><td class="lbl" rowspan="2">Passé <span class="p">Izri</span></td><td>affirmatif</td><td class="c">yuli · tusa-d · yerɣa</td></tr>
+              <tr><td>négatif</td><td class="c">ur yuki ara</td></tr>
+              <tr><td class="lbl" rowspan="3">Aoriste <span class="p">Urmir</span></td><td>simple (sans particule)</td><td class="c">win yebɣan ad yečč, yečč</td></tr>
+              <tr><td>avec « ad » (futur)</td><td class="c">ass-a, ad jbuɣ ɣur-s</td></tr>
+              <tr><td>intensif (en cours / habituel)</td><td class="c">yettmeslay d gma-s</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PRONOMS -->
+      <section id="pronoms">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>6.0 · Imqimen</span>
+          <h2>Les pronoms <span class="kab">Imqimen</span></h2>
+          <p class="lede">Ils remplacent un nom et marquent avec précision les relations personnelles (sujet, objet) et possessives.</p>
+        </div>
+
+        <h4 class="block-title">Pronoms personnels &amp; affixes</h4>
+        <p class="tbl-cap" style="margin-top:0">Faites défiler horizontalement — <span class="kab">1u</span> = 1ʳᵉ pers. · <span class="kab">w2</span> = 2ᵉ · <span class="kab">w3</span> = 3ᵉ · A = masculin · U = féminin</p>
+        <div class="tbl-scroll reveal">
+          <table style="min-width:920px">
+            <thead>
+              <tr>
+                <th>Pers.</th><th>Isolé</th><th>Poss. parenté</th><th>Poss. commun</th><th>Poss. nombre</th>
+                <th>OD postposé</th><th>OD antéposé</th><th>OI postposé</th><th>OI antéposé</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="lbl">1u</td><td class="k">Nekk</td><td class="k">- / -inu</td><td class="k">-inu / -iw</td><td class="k">-inu / -iw</td><td class="c">-yi / -iyi</td><td class="c">yi-</td><td class="c">-yi / -iyi</td><td class="c">yi-</td></tr>
+              <tr><td class="lbl">w2 A</td><td class="k">Kečč</td><td class="k">-k</td><td class="k">-inek / -ik</td><td class="k">-inek / -ik</td><td class="c">-k / -ik</td><td class="c">k-</td><td class="c">-yak / -ak</td><td class="c">ak-</td></tr>
+              <tr><td class="lbl">w2 U</td><td class="k">Kemm</td><td class="k">-m</td><td class="k">-inem / -im</td><td class="k">-inem / -im</td><td class="c">-kem / -ikem</td><td class="c">kem-</td><td class="c">-yam / -am</td><td class="c">am-</td></tr>
+              <tr><td class="lbl">w3 A</td><td class="k">Netta</td><td class="k">-s</td><td class="k">-ines / -is</td><td class="k">-ines / -is</td><td class="c">-t / -it</td><td class="c">t-</td><td class="c">-yas / -as</td><td class="c">as-</td></tr>
+              <tr><td class="lbl">w3 U</td><td class="k">Nettat</td><td class="k">-s</td><td class="k">-ines / -is</td><td class="k">-ines / -is</td><td class="c">-tt / -itt</td><td class="c">tt-</td><td class="c">-yas / -as</td><td class="c">as-</td></tr>
+              <tr><td class="lbl">1u pl A</td><td class="k">Nekni</td><td class="k">-tneɣ</td><td class="k">-nneɣ</td><td class="k">-nneɣ</td><td class="c">-yaɣ / -aɣ</td><td class="c">aɣ-</td><td class="c">-yaɣ / -aɣ</td><td class="c">aɣ-</td></tr>
+              <tr><td class="lbl">1u pl U</td><td class="k">Nkenti</td><td class="k">-tenteɣ</td><td class="k">-nnteɣ</td><td class="k">-nnteɣ</td><td class="c">-yaɣ / -aɣ</td><td class="c">aɣ-</td><td class="c">-yaɣ / -aɣ</td><td class="c">aɣ-</td></tr>
+              <tr><td class="lbl">w2 pl A</td><td class="k">Kunwi</td><td class="k">-twen</td><td class="k">-nwen</td><td class="k">-nwen</td><td class="c">-ken / -iken</td><td class="c">ken-</td><td class="c">-yawen / -awen</td><td class="c">awen-</td></tr>
+              <tr><td class="lbl">w2 pl U</td><td class="k">Kunemti</td><td class="k">-twent</td><td class="k">-nwent</td><td class="k">-nwent</td><td class="c">-kent / -ikent</td><td class="c">kent-</td><td class="c">-yawent / -awent</td><td class="c">awent-</td></tr>
+              <tr><td class="lbl">w3 pl A</td><td class="k">Nutni</td><td class="k">-tsen</td><td class="k">-nsen</td><td class="k">-nsen</td><td class="c">-ten / -iten</td><td class="c">ten-</td><td class="c">-yasen / -asen</td><td class="c">asen-</td></tr>
+              <tr><td class="lbl">w3 pl U</td><td class="k">Nutenti</td><td class="k">-tsent</td><td class="k">-nsent</td><td class="k">-nsent</td><td class="c">-tent / -itent</td><td class="c">tent-</td><td class="c">-yasent / -asent</td><td class="c">asent-</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note reveal">Exemples : <span class="ex">Baba-inu</span> (mon père) · <span class="ex">Akal-inu / Akal-iw</span> (ma terre) · <span class="ex">Yezla-yi</span> (il m'a égorgé) · <span class="ex">Ad yi-yezlu</span> (il m'égorgera) · <span class="ex">Yura-yi</span> (il m'a écrit) · <span class="ex">Ad yi-yaru</span> (il m'écrira).</div>
+
+        <h4 class="block-title">Démonstratifs, interrogatifs, relatifs &amp; indéfinis</h4>
+        <div class="tbl-scroll reveal">
+          <table style="min-width:720px">
+            <thead><tr><th>Catégorie</th><th>M. sg</th><th>F. sg</th><th>M. pl</th><th>F. pl</th><th>Neutre</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Proximité</td><td class="k">wa</td><td class="k">ta</td><td class="k">wi</td><td class="k">ti</td><td class="k">aya</td></tr>
+              <tr><td class="lbl">Éloignement</td><td class="k">wihin</td><td class="k">tihin</td><td class="k">widakihin</td><td class="k">tidakihin</td><td class="k">—</td></tr>
+              <tr><td class="lbl">Évocation</td><td class="k">win</td><td class="k">tin</td><td class="k">wid</td><td class="k">tid</td><td class="k">ayen</td></tr>
+              <tr><td class="lbl">Altérité</td><td class="k">wayeḍ / win-nniḍen</td><td class="k">tayeḍ / tin-nniḍen</td><td class="k">wiyaḍ / wid-nniḍen</td><td class="k">tiyaḍ / tid-nniḍen</td><td class="k">ayen-nniḍen</td></tr>
+              <tr><td class="lbl">Interrogatif</td><td class="k">anwa</td><td class="k">anta</td><td class="k">anwi</td><td class="k">anti</td><td class="k">wi</td></tr>
+              <tr><td class="lbl">Relatif</td><td class="k">i / ay</td><td class="k">i / ay</td><td class="k">i / ay</td><td class="k">i / ay</td><td class="k">i / ay</td></tr>
+              <tr><td class="lbl">Indéfini</td><td class="k">yiwen / kra</td><td class="k">yiwet / kra</td><td class="k">kra</td><td class="k">kra</td><td class="k">ara / acemma</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ PART III ============ -->
+      <div class="part-divider reveal">
+        <div class="roman">Aḥric wis 3</div>
+        <h3>Syntaxe &amp; typologie textuelle</h3>
+        <div class="rule"></div>
+      </div>
+
+      <!-- PHRASE -->
+      <section id="phrase">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>7.0 · Tafyirt</span>
+          <h2>La phrase <span class="kab">Tafyirt</span></h2>
+          <p class="lede">Unité de sens organisée autour d'un prédicat, enrichie de compléments (<span class="kab">isemmaden</span>).</p>
+        </div>
+
+        <h4 class="block-title">Les compléments <span class="kab" style="font-size:16px">Isemmaden</span></h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Complément</th><th>État</th><th>Question</th><th>Exemple</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Sujet / agent <span class="p">imsegzi</span></td><td class="c">amaruz</td><td>anwa ? (qui ?)</td><td class="k">Ɣaben yizmawen.</td></tr>
+              <tr><td class="lbl">Objet direct <span class="p">usrid</span></td><td class="c">ilelli</td><td>acu ? (quoi ?)</td><td class="k">Yura tabrat.</td></tr>
+              <tr><td class="lbl">Objet indirect <span class="p">arusrid</span></td><td class="c">amaruz</td><td>i wumi ? (à qui ?)</td><td class="k">Yura tabrat i yimawlan-is.</td></tr>
+              <tr><td class="lbl">Circonstanciel <span class="p">s tenzeɣt</span></td><td class="c">amaruz</td><td>—</td><td class="k">Rziɣ ɣer tmanaɣt.</td></tr>
+              <tr><td class="lbl">Du nom <span class="p">n yisem</span></td><td class="c">amaruz</td><td>—</td><td class="k">Tamurt n yimaziɣen.</td></tr>
+              <tr><td class="lbl">Interne <span class="p">agensay</span></td><td class="c">ilelli</td><td>—</td><td class="k">Igen taguni n uwaɣzen.</td></tr>
+              <tr><td class="lbl">Adverbial <span class="p">ilelli</span></td><td class="c">ilelli</td><td>—</td><td class="k">Tedda d tislit ilindi.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card reveal">
+          <b style="color:var(--gold-soft);font-family:var(--fx-display)">Analyse complète</b>
+          <p style="margin:12px 0;font-family:var(--fx-data);font-size:19px;color:var(--gold-soft);line-height:1.5">Tessawel <span style="color:var(--cyan)">temɣart</span> <span style="color:#c89bff">tamacahut</span> <span style="color:var(--green)">i warrac</span> <span style="color:var(--gold)">ɣef umnar</span> <span style="color:var(--red)">n tewwurt</span>.</p>
+          <p style="margin:0 0 4px;color:var(--ink-mute);font-style:italic">La vieille femme a raconté un conte aux enfants sur le seuil de la porte.</p>
+          <ul class="clean" style="margin-top:14px">
+            <li><span style="color:var(--cyan)">temɣart</span> → sujet (imsegzi)</li>
+            <li><span style="color:#c89bff">tamacahut</span> → objet direct (usrid)</li>
+            <li><span style="color:var(--green)">i warrac</span> → objet indirect (arusrid)</li>
+            <li><span style="color:var(--gold)">ɣef umnar</span> → circonstanciel (s tenzeɣt)</li>
+            <li><span style="color:var(--red)">n tewwurt</span> → complément du nom (n yisem)</li>
+          </ul>
+          <div class="note gold" style="margin-bottom:0">Le sujet postposé, l'objet indirect, le circonstanciel et le complément du nom passent tous à <b>l'état d'annexion</b> — c'est le mécanisme clé de la cohésion de la phrase amazighe.</div>
+        </div>
+
+        <h4 class="block-title">Types de phrases <span class="kab" style="font-size:16px">Anawen n tefyirt</span></h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Critère</th><th>Type</th><th>Kabyle</th><th>Exemple</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl" rowspan="4">Modalité</td><td>Déclarative</td><td class="k">tamseɣrut</td><td class="c">Tedda d tislit ilindi.</td></tr>
+              <tr><td>Interrogative</td><td class="k">tamsestant</td><td class="c">Yella kra i d-tewwiḍ ?</td></tr>
+              <tr><td>Injonctive</td><td class="k">tamanaḍt</td><td class="c">Meyyez qbel aneggez.</td></tr>
+              <tr><td>Exclamative</td><td class="k">n ubhat</td><td class="c">Ay tecbeḥ tefsut !</td></tr>
+              <tr><td class="lbl" rowspan="2">Minimale <span class="p">taddayt</span></td><td>Verbale</td><td class="k">tumyigt</td><td class="c">Yečča.</td></tr>
+              <tr><td>Non-verbale</td><td class="k">tarumyigt</td><td class="c">D asafu.</td></tr>
+              <tr><td class="lbl" rowspan="2">Simple <span class="p">taḥerfit</span></td><td>Verbale</td><td class="k">tumyigt</td><td class="c">Yečča urgaz aɣrum.</td></tr>
+              <tr><td>Non-verbale</td><td class="k">tarumyigt</td><td class="c">Tamusni, d asafu n wurɣu.</td></tr>
+              <tr><td class="lbl" rowspan="3">Complexe <span class="p">tuddist</span></td><td>Relative</td><td class="k">tamassaɣt</td><td class="c">Win yebɣan tamaziɣt, yissin tira-s.</td></tr>
+              <tr><td>Coordonnée</td><td class="k">taɣuni</td><td class="c">Yesla, yusa-d.</td></tr>
+              <tr><td>Subordonnée</td><td class="k">asagel</td><td class="c">Ur d-yusi ara acku yuḍen.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CONNECTEURS / TIZDIT -->
+      <section id="connecteurs">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>7.1 · Tizdit</span>
+          <h2>Le trait d'union <span class="kab">Tizdit</span></h2>
+          <p class="lede">Le tiret « - » relie les mots entre eux. Son usage est strictement codifié.</p>
+        </div>
+        <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card" style="margin:0;border-color:var(--green)">
+            <b style="color:var(--green);font-family:var(--fx-display)">Obligatoire · Ad naru tizdit</b>
+            <ul class="clean" style="margin-top:12px">
+              <li>Verbe + affixes pronominaux / directionnels : <span class="ex">yewwi-t-id · yewwi-yas-t</span></li>
+              <li>Nom + affixes possessifs / démonstratifs : <span class="ex">axxam-nneɣ · taddart-a</span></li>
+              <li>Préposition + pronom : <span class="ex">fell-as · deg-neɣ · ɣur-sent</span></li>
+            </ul>
+          </div>
+          <div class="card" style="margin:0;border-color:var(--red)">
+            <b style="color:var(--red);font-family:var(--fx-display)">Interdit · Ur nettaru tizdit</b>
+            <ul class="clean" style="margin-top:12px">
+              <li>Particule « ad » + verbe : <span class="ex">Ad yečč. · Ad taruḍ.</span></li>
+              <li>« wis » + nombre : <span class="ex">wis sin · wis kraḍ</span></li>
+              <li>Composants des noms composés : <span class="ex">Yusef u Qasi · Si Muḥend u Mḥend</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOMONYMES -->
+      <section id="homonymes">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>7.2 · Iynisam</span>
+          <h2>Les homonymes <span class="kab">Iynisam</span></h2>
+          <p class="lede">Mots qui se prononcent de la même façon mais dont le sens diffère. La graphie (attachée ou séparée) fait toute la différence.</p>
+        </div>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Forme 1</th><th>Sens</th><th>Forme 2</th><th>Sens</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Dayen</td><td>C'est fini <span class="p">· Dayen, yefra wurar.</span></td><td class="k">D ayen</td><td>C'est ce que <span class="p">· D ayen tebɣa.</span></td></tr>
+              <tr><td class="k">Dacu</td><td>comparaison <span class="p">· Telha dacu telha.</span></td><td class="k">D acu</td><td>Qu'est-ce que <span class="p">· D acu i tebɣiḍ ?</span></td></tr>
+              <tr><td class="k">Ɣurek</td><td>Fais attention ! <span class="p">· Ɣurek ad teɣliḍ !</span></td><td class="k">Ɣur-k</td><td>Tu as <span class="p">· Ɣur-k sin n warrac.</span></td></tr>
+              <tr><td class="k">Dakken</td><td>que (conj.) <span class="p">· …dakken yif…</span></td><td class="k">D akken</td><td>c'est ainsi <span class="p">· D akken t-yeǧǧan.</span></td></tr>
+              <tr><td class="k">Iwakken</td><td>afin que <span class="p">· …iwakken ad yissin…</span></td><td class="k">I wakken</td><td>pour cela <span class="p">· I tmecreḍt…</span></td></tr>
+              <tr><td class="k">Iwimi</td><td>pourquoi <span class="p">· Iwimi tugiḍ ?</span></td><td class="k">I wimi</td><td>à qui <span class="p">· I wimi tessawleḍ ?</span></td></tr>
+              <tr><td class="k">Mulac</td><td>sinon <span class="p">· …mulac ad terfu.</span></td><td class="k">Ma ulac</td><td>s'il n'y a pas <span class="p">· Ma ulac irden…</span></td></tr>
+              <tr><td class="k">Gar</td><td>entre (prép.) <span class="p">· …gar wuccanen.</span></td><td class="k">Ger</td><td>mets (verbe) <span class="p">· Ger-d afus-ik.</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TEXTES -->
+      <section id="textes">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>8.0 · Aḍris</span>
+          <h2>Types de textes <span class="kab">Aḍris</span></h2>
+          <p class="lede">Un texte est un ensemble cohérent de phrases organisées autour d'une intention. Cinq grands types, chacun avec sa structure.</p>
+        </div>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Type</th><th>Kabyle</th><th>But</th><th>Structure &amp; caractéristiques</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">Narratif</td><td class="k">Ullis</td><td>Raconter une histoire (réelle ou imaginaire)</td><td>Situation initiale → péripéties → situation finale · temps du passé, dialogues</td></tr>
+              <tr><td class="lbl">Descriptif</td><td class="k">Agelman</td><td>Faire voir un personnage, un objet, un lieu</td><td>Présentation générale → détails · imparfait/présent, adjectifs, compléments du nom</td></tr>
+              <tr><td class="lbl">Explicatif</td><td class="k">Imsegzi</td><td>Faire comprendre (Acuɣer ? Amek ?)</td><td>Introduction → explication → synthèse · ton neutre, connecteurs logiques</td></tr>
+              <tr><td class="lbl">Argumentatif</td><td class="k">Imesfukel</td><td>Convaincre d'une thèse</td><td>Thèse → arguments → exemples · implication de l'auteur</td></tr>
+              <tr><td class="lbl">Injonctif</td><td class="k">Amanaḍ</td><td>Guider l'action (ordres, conseils, consignes)</td><td>Liste d'instructions · impératif/infinitif, phrases courtes, schémas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ ANNEXES ============ -->
+      <div class="part-divider reveal">
+        <div class="roman">Timerna</div>
+        <h3>Annexes</h3>
+        <div class="rule"></div>
+      </div>
+
+      <!-- NOMBRES -->
+      <section id="nombres">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>Annexe A · Imḍanen</span>
+          <h2>Les nombres <span class="kab">Imḍanen</span></h2>
+          <p class="lede">Cardinaux amazighs, avec formes masculine (<span class="kab">amalay</span>) et féminine (<span class="kab">unti</span>). Essayez le convertisseur ci-dessous.</p>
+        </div>
+
+        <div class="num-tool reveal">
+          <div class="num-row">
+            <input class="num-input" id="numIn" type="number" min="0" max="999" value="237" aria-label="Nombre">
+            <div class="toggle" id="numGender">
+              <button class="on" data-g="m">Amalay ♂</button>
+              <button data-g="f">Unti ♀</button>
+            </div>
+          </div>
+          <div class="num-out"><div class="word" id="numOut"></div></div>
+          <div class="num-chips">
+            <span class="chip" data-n="7">7</span>
+            <span class="chip" data-n="21">21</span>
+            <span class="chip" data-n="58">58</span>
+            <span class="chip" data-n="100">100</span>
+            <span class="chip" data-n="121">121</span>
+            <span class="chip" data-n="458">458</span>
+            <span class="chip" data-n="956">956</span>
+          </div>
+          <p class="tbl-cap">Convertisseur de 0 à 999, d'après les conventions du manuel.</p>
+        </div>
+
+        <h4 class="block-title">Unités &amp; dizaines</h4>
+        <div class="tbl-scroll reveal">
+          <table style="min-width:640px">
+            <thead><tr><th>Valeur</th><th>Amalay ♂</th><th>Unti ♀</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">0</td><td class="k">ilem</td><td class="k">ilem</td></tr>
+              <tr><td class="lbl">1</td><td class="k">yiwen</td><td class="k">yiwet</td></tr>
+              <tr><td class="lbl">2</td><td class="k">sin</td><td class="k">snat</td></tr>
+              <tr><td class="lbl">3</td><td class="k">kraḍ</td><td class="k">kraḍt</td></tr>
+              <tr><td class="lbl">4</td><td class="k">kuẓ</td><td class="k">kuẓt</td></tr>
+              <tr><td class="lbl">5</td><td class="k">semmus</td><td class="k">semmust</td></tr>
+              <tr><td class="lbl">6</td><td class="k">sḍis</td><td class="k">sḍist</td></tr>
+              <tr><td class="lbl">7</td><td class="k">sa</td><td class="k">sat</td></tr>
+              <tr><td class="lbl">8</td><td class="k">ṭam</td><td class="k">ṭamt</td></tr>
+              <tr><td class="lbl">9</td><td class="k">tẓa</td><td class="k">tẓat</td></tr>
+              <tr><td class="lbl">10</td><td class="k">mraw</td><td class="k">mrawt</td></tr>
+              <tr><td class="lbl">11 · 12</td><td class="k">mraw d yiwen · mraw d sin</td><td class="k">mrawt d yiwet · mrawt d snat</td></tr>
+              <tr><td class="lbl">20 → 90</td><td class="k" colspan="2">snat · kraḍt · kuẓt · semmust · sḍist · sat · ṭamt · tẓat <b style="color:var(--ink)">+ tmerwin</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="block-title">Centaines, milliers &amp; grands nombres</h4>
+        <div class="tbl-scroll reveal">
+          <table>
+            <thead><tr><th>Valeur</th><th>En toutes lettres</th></tr></thead>
+            <tbody>
+              <tr><td class="lbl">100</td><td class="k">tawinest</td></tr>
+              <tr><td class="lbl">200 · 300</td><td class="k">snat twinas · kraḍt twinas</td></tr>
+              <tr><td class="lbl">121</td><td class="k">tawinest d snat tmerwin d yiwen</td></tr>
+              <tr><td class="lbl">130</td><td class="k">tawinest d kraḍt tmerwin</td></tr>
+              <tr><td class="lbl">1 000</td><td class="k">agim</td></tr>
+              <tr><td class="lbl">2 000</td><td class="k">sin (n) yigiman</td></tr>
+              <tr><td class="lbl">1 000 000</td><td class="k">amelyun</td></tr>
+              <tr><td class="lbl">1 000 000 000</td><td class="k">amelyar</td></tr>
+              <tr><td class="lbl">2 972</td><td class="k">sin n yigiman tẓat twinas sat tmerwin d sin</td></tr>
+              <tr><td class="lbl">21 956 237 458</td><td class="k" style="font-size:14px">snat tmerwin d yiwen n yimelyaren · tẓat twinas semmust tmerwin d sḍis n yimelyan · snat twinas kraḍt tmerwin d sa n yigiman · kuẓt twinas semmust tmerwin d ṭam</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TIFINAGH -->
+      <section id="tifinagh">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>Annexe B · Agemmay n tfinaɣ</span>
+          <h2>L'alphabet <span class="kab">Tifinaɣ</span></h2>
+          <p class="lede">Alphabet historique des Amazighs. Correspondance avec la notation latine standard.</p>
+        </div>
+        <div class="tbl-scroll reveal">
+          <table style="min-width:560px">
+            <thead><tr><th>Latin</th><th>Tifinaɣ</th><th>Latin</th><th>Tifinaɣ</th></tr></thead>
+            <tbody>
+              <tr><td class="k">a</td><td class="tif" style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴰ</td><td class="k">n</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵏ</td></tr>
+              <tr><td class="k">b</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴱ / ⵠ</td><td class="k">ɣ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵖ</td></tr>
+              <tr><td class="k">c</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵛ</td><td class="k">q</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵇ</td></tr>
+              <tr><td class="k">č</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵞ</td><td class="k">r</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵔ</td></tr>
+              <tr><td class="k">d</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴷ / ⴸ</td><td class="k">ṛ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵕ</td></tr>
+              <tr><td class="k">ḍ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴹ</td><td class="k">s</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵙ</td></tr>
+              <tr><td class="k">e</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴻ</td><td class="k">ṣ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵚ</td></tr>
+              <tr><td class="k">f</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴼ</td><td class="k">t</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵜ / ⵝ</td></tr>
+              <tr><td class="k">g</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴳ / ⴴ</td><td class="k">ṭ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵟ</td></tr>
+              <tr><td class="k">ǧ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴵ</td><td class="k">u</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵓ</td></tr>
+              <tr><td class="k">h</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵀ</td><td class="k">w</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵡ</td></tr>
+              <tr><td class="k">ḥ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵃ</td><td class="k">x</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵅ</td></tr>
+              <tr><td class="k">i</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵉ</td><td class="k">y</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵢ</td></tr>
+              <tr><td class="k">j</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵊ</td><td class="k">z</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵣ</td></tr>
+              <tr><td class="k">k</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⴽ / ⴿ</td><td class="k">ẓ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵥ</td></tr>
+              <tr><td class="k">l</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵍ</td><td class="k">ɛ</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵄ</td></tr>
+              <tr><td class="k">m</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵎ</td><td class="k">p · v</td><td style="font-family:var(--fx-tif);color:var(--cyan);font-size:22px">ⵒ · ⵠ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- GLOSSAIRE -->
+      <section id="glossaire">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>Annexe C · Tamawalt</span>
+          <h2>Glossaire <span class="kab">Tamawalt</span></h2>
+          <p class="lede">Tous les termes grammaticaux du manuel avec leur équivalent français. Filtrez en tapant en kabyle ou en français.</p>
+        </div>
+        <input class="gloss-search" id="glossSearch" type="text" placeholder="Cherchez un terme… (ex. amyag, annexion, tamsertit)">
+        <div class="gloss-count" id="glossCount"></div>
+        <div class="gloss-grid" id="glossGrid"></div>
+        <div class="gloss-empty" id="glossEmpty" style="display:none">Ulac · Aucun terme trouvé.</div>
+      </section>
+
+      <!-- BIBLIO -->
+      <section id="biblio">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>Tiɣbula</span>
+          <h2>Bibliographie <span class="kab">Tiɣbula</span></h2>
+        </div>
+        <ul class="clean reveal">
+          <li><b>Aslugen n tira n tmaziɣt</b> — HCA, 2012</li>
+          <li><b>Ilugan n tira n tmaziɣt</b> — K. Bouamara, B. Hamek, M.-L. Mahrouche, Z. Meksem, A. Rabehi, M. Tidjet — 2009, Taẓrigt n yimeskaren, Bgayet</li>
+          <li><b>AWFUS n tutlayt tamaziɣt</b> — Boussad Kebir, Asqamu Unnig n Timmuzɣa, 2011</li>
+          <li><b>Tisekkiwin n yiḍrisen — Tagmert d tesleḍt</b> — Zahir Meksem, 2010</li>
+          <li><b>Introduction à la réalisation d'un dictionnaire Tamazight-Tamazight à base kabyle</b> — Brahim Hamek, thèse de doctorat, UMMTO, 2012</li>
+          <li><b>Amawal n tsenselkimt</b> — Samiya Saad Buzefran, L'Harmattan, 1996</li>
+          <li><b>Amawal n tusnakt</b> — Tafsut 4, 1984</li>
+        </ul>
+      </section>
+
+      <!-- QUIZ -->
+      <section id="quiz">
+        <div class="sec-head reveal">
+          <span class="kicker"><span class="glyph">ⵣ</span>Asqerdec</span>
+          <h2>Testez-vous <span class="kab">Asqerdec</span></h2>
+          <p class="lede">Huit questions pour vérifier vos acquis. Choisissez une réponse — le corrigé s'affiche aussitôt.</p>
+        </div>
+        <div class="quiz-card reveal" id="quizCard">
+          <div id="quizBody"></div>
+          <div class="quiz-nav" id="quizNav" style="display:none">
+            <span class="quiz-prog" id="quizProg"></span>
+            <button class="btn" id="quizNext">Suivant →</button>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="yaz">ⵣ</div>
+        <div class="motto">« Uqbel ad tegrem asurif, ad tezwirem nnif »</div>
+        <div class="meta">D'après le Manuel de Référence de la Grammaire Amazighe · <b>Juba Tala</b> · <a href="https://adrar-inu.blogspot.com">adrar-inu.blogspot.com</a> · Wamber 2025</div>
+      </footer>
+
+    </div><!-- /wrap -->
+  </main>
+</div>
+
+<button class="totop" id="totop" aria-label="Haut de page">↑</button>
+
+<script>
+/* ============================================================
+   DATA — ALPHABET (latin, tifinagh, name, examples)
+   ============================================================ */
+const ALPHABET = [
+  {l:"a",t:"ⴰ",n:"a, aɣra",ex:"aman · azal"},
+  {l:"b",t:"ⴱ",n:"ba",ex:"baba · bibb"},
+  {l:"c",t:"ⵛ",n:"ca",ex:"aclim · uccen"},
+  {l:"č",t:"ⵞ",n:"yeč",ex:"učči · aberčečč"},
+  {l:"d",t:"ⴷ",n:"da",ex:"dadda · udi"},
+  {l:"ḍ",t:"ⴹ",n:"ḍar",ex:"aḍar · ablaḍ · aḍu"},
+  {l:"e",t:"ⴻ",n:"tiɣri n yilem",ex:"izem · ales"},
+  {l:"f",t:"ⴼ",n:"fa",ex:"afus · tuffra · ilef"},
+  {l:"g",t:"ⴳ",n:"ga",ex:"targa · agu"},
+  {l:"ǧ",t:"ⴵ",n:"yeǧ",ex:"tiǧǧin · taǧǧewt"},
+  {l:"h",t:"ⵀ",n:"ha",ex:"awelleh · ahicur"},
+  {l:"ḥ",t:"ⵃ",n:"ḥim",ex:"aḥallum · aḥlalas"},
+  {l:"i",t:"ⵉ",n:"i, iɣri",ex:"itri · izi · imi"},
+  {l:"j",t:"ⵊ",n:"ja",ex:"ajlal · tiji · inijel"},
+  {l:"k",t:"ⴽ",n:"ka",ex:"akal · ayefki"},
+  {l:"l",t:"ⵍ",n:"la",ex:"alim · tala"},
+  {l:"m",t:"ⵎ",n:"ma",ex:"imir · aman"},
+  {l:"n",t:"ⵏ",n:"na",ex:"inigi · aslen · ini"},
+  {l:"q",t:"ⵇ",n:"qil",ex:"aqadus · abquq"},
+  {l:"r",t:"ⵔ",n:"ra",ex:"amrar · rwu"},
+  {l:"s",t:"ⵙ",n:"sa",ex:"agusim · subb"},
+  {l:"t",t:"ⵜ",n:"ta",ex:"ntu · tawla"},
+  {l:"ṭ",t:"ⵟ",n:"ṭar",ex:"aṭas · iṭij · imeṭṭi"},
+  {l:"u",t:"ⵓ",n:"u, uɣru",ex:"ul · ulmu · usu"},
+  {l:"w",t:"ⵡ",n:"wa",ex:"awal · acwir"},
+  {l:"x",t:"ⵅ",n:"xa",ex:"axxam · axelxal"},
+  {l:"y",t:"ⵢ",n:"ya",ex:"aylew · ayyur"},
+  {l:"z",t:"ⵣ",n:"za",ex:"uzzal · izem · annuz"},
+  {l:"ẓ",t:"ⵥ",n:"ẓar",ex:"iẓi · aẓar · laẓ"},
+  {l:"ɣ",t:"ⵖ",n:"ɣar",ex:"iɣil · aɣrum · taleɣt"},
+  {l:"ɛ",t:"ⵄ",n:"ɛil",ex:"aɛlaw · aɛrur"}
+];
+const ADDITIONAL = [
+  {l:"ṛ",t:"ⵕ",n:"emphatique de r",ex:"fuṛṛ · faṛes"},
+  {l:"ṣ",t:"ⵚ",n:"emphatique de s",ex:"ṣṣif · aṣufi"},
+  {l:"o",t:"—",n:"additionnelle",ex:"—"},
+  {l:"p",t:"ⵒ",n:"additionnelle",ex:"—"},
+  {l:"v",t:"ⵠ",n:"additionnelle",ex:"—"}
+];
+
+/* Build alphabet grid */
+const grid = document.getElementById("alphaGrid");
+const adLat = document.getElementById("adLat"),
+      adTif = document.getElementById("adTif"),
+      adName = document.getElementById("adName"),
+      adEx = document.getElementById("adEx");
+function selectLetter(item, el){
+  document.querySelectorAll(".tile").forEach(t=>t.classList.remove("sel"));
+  el.classList.add("sel");
+  adLat.textContent = item.l;
+  adTif.textContent = item.t;
+  adName.textContent = "isem · " + item.n;
+  adEx.textContent = item.ex;
+}
+function makeTile(item, extra){
+  const d = document.createElement("button");
+  d.className = "tile" + (extra ? " add" : "");
+  d.innerHTML = `<span class="lat">${item.l}</span><span class="t">${item.t}</span>`;
+  d.addEventListener("click", ()=>selectLetter(item, d));
+  return d;
+}
+ALPHABET.forEach(it=>grid.appendChild(makeTile(it,false)));
+ADDITIONAL.forEach(it=>grid.appendChild(makeTile(it,true)));
+
+/* ============================================================
+   TABS (generic)
+   ============================================================ */
+function wireTabs(containerId){
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  box.querySelectorAll(".tab").forEach(tab=>{
+    tab.addEventListener("click",()=>{
+      box.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));
+      tab.classList.add("on");
+      const target = tab.dataset.t;
+      // panels are siblings after the tab container
+      const parent = box.parentElement;
+      parent.querySelectorAll(".panel").forEach(p=>p.classList.remove("on"));
+      const panel = document.getElementById(target);
+      if(panel) panel.classList.add("on");
+    });
+  });
+}
+wireTabs("tsTabs");
+wireTabs("anxTabs");
+
+/* ============================================================
+   NUMBER CONVERTER (0–999)
+   ============================================================ */
+const UNITS = {
+  m:["ilem","yiwen","sin","kraḍ","kuẓ","semmus","sḍis","sa","ṭam","tẓa"],
+  f:["ilem","yiwet","snat","kraḍt","kuẓt","semmust","sḍist","sat","ṭamt","tẓat"]
+};
+const TENS_FEM = UNITS.f; // feminine unit forms feed the "tmerwin" construct
+
+function belowHundred(n, g){
+  if(n === 0) return "";
+  if(n <= 9) return UNITS[g][n];
+  if(n === 10) return g === "m" ? "mraw" : "mrawt";
+  if(n <= 19) return "mraw d " + UNITS[g][n-10];
+  const tens = Math.floor(n/10), unit = n%10;
+  const tensWord = TENS_FEM[tens] + " tmerwin";
+  return unit === 0 ? tensWord : tensWord + " d " + UNITS[g][unit];
+}
+function toWords(n, g){
+  if(n === 0) return UNITS[g][0];
+  const h = Math.floor(n/100), rest = n%100;
+  const restWord = belowHundred(rest, g);
+  if(h === 0) return restWord;
+  const hundredWord = h === 1 ? "tawinest" : TENS_FEM[h] + " twinas";
+  const joiner = h === 1 ? " d " : " ";
+  return rest === 0 ? hundredWord : hundredWord + joiner + restWord;
+}
+const numIn = document.getElementById("numIn"),
+      numOut = document.getElementById("numOut"),
+      numGender = document.getElementById("numGender");
+let currentGender = "m";
+function renderNumber(){
+  let v = parseInt(numIn.value, 10);
+  if(isNaN(v) || v < 0){ numOut.textContent = "—"; return; }
+  if(v > 999){ v = 999; numIn.value = 999; }
+  numOut.textContent = toWords(v, currentGender);
+}
+numIn.addEventListener("input", renderNumber);
+numGender.querySelectorAll("button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    numGender.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    currentGender = b.dataset.g;
+    renderNumber();
+  });
+});
+document.querySelectorAll(".chip").forEach(c=>{
+  c.addEventListener("click",()=>{ numIn.value = c.dataset.n; renderNumber(); });
+});
+renderNumber();
+
+/* ============================================================
+   GLOSSARY — full term list (kabyle : french)
+   ============================================================ */
+const GLOSSARY = [
+  ["Agemmay","Alphabet"],["Asekkil","Caractère"],["Amedya","Exemple"],["Unnim","Habituel"],
+  ["Ilugan","Règles"],["Tussda","Tension / gémination"],["Tiggeɣt","Occlusion"],["Tizenzeɣt","Spirantisation"],
+  ["Asnislan","Linguistique"],["Tumrist","Pratique"],["Tanɣit","Labio-vélarisation"],["Tazegnaggaɣt","Affrication"],
+  ["Tufayt","Emphase"],["Tiɣri","Voyelle"],["Tirgalin","Consonnes"],["Asigez","Ponctuation"],
+  ["Uzzigen","Spécifiques"],["Isem","Nom"],["Akmam","Concret"],["Amagnu","Commun"],["Amadwan","Abstrait"],
+  ["Amaẓlay","Particulier / Propre"],["N timmarewt","De parenté"],["Aḥerfi","Simple"],["Uddis","Composé"],
+  ["Tawsit","Genre"],["Amalay","Masculin"],["Unti","Féminin"],["Amḍan","Nombre"],["Asuf","Singulier"],
+  ["Asget","Pluriel"],["Addad","État"],["Ilelli","Libre"],["Aseɣru","Prédicat"],["Amaruz","Annexion"],
+  ["Amyag","Verbe"],["Timeẓri","Aspect"],["Imataren","Indices"],["Udmawanen","De personnes"],["Afeggag","Radical"],
+  ["Tizelɣiwin","Particules"],["Tanila","Direction"],["Alugan","Régulier"],["Arlugan","Irrégulier"],["Aggay","Groupe"],
+  ["N tigawt","D'action"],["N tɣara","De qualité"],["Timsukt","Transitivité"],["Amsukk","Transitif"],
+  ["Aremsukk","Intransitif"],["Talɣa","Forme"],["Amaɣun","Participe"],["Ilaw","Affirmatif"],["Ibaw","Négatif"],
+  ["Amassaɣ","Relatif"],["Armeskil","Invariable"],["Tasuddimt","Dérivée"],["Aswaɣ","Factitif"],["Attwaɣ","Passif"],
+  ["Amyaɣ","Réciproque"],["Tazelma","Dérivation"],["Anaḍ","Impératif"],["Ussid","Intensif"],["Izri","Passé"],
+  ["Urmir","Aoriste"],["Tizdit","Trait d'union"],["Assaɣ","Lien"],["Iwsilen","Affixes"],["Arbib","Adjectif"],
+  ["Ameskan","Démonstratif"],["N tiẓin","De proximité"],["N tigguga","D'éloignement"],["N ubdar","D'évocation"],
+  ["N tiḍent","D'altérité"],["Tanzeɣt","Préposition"],["Addad ilelli","État libre"],["Addad amaruz","État d'annexion"],
+  ["Asirew","Génération"],["Tawtilt","Condition"],["Ayensekkil","Monolitère"],["Awsiw","Générique"],["Amasay","Mixte"],
+  ["Amqim","Pronom"],["Arawsan","Neutre"],["Amattar","Interrogatif"],["Arbadu","Indéfini"],["Asemmad","Complément"],
+  ["Imsegzi","Explicatif"],["N umigaw","D'agent"],["Usrid","Direct"],["Arusrid","Indirect"],["Agensay","Interne"],
+  ["Amaɣlayan","Circonstant"],["N usentel","D'objet"],["Tamsertit","Assimilation"],["Taɣessa","Structure"],
+  ["Tamsislant","Phonétique"],["Timenna","Allocution"],["Iynisam","Homonymes"],["Tamseɣrut","Informative / déclarative"],
+  ["Tamsestant","Interrogative"],["Tamanaḍt","Injonctive"],["N ubhat","D'exclamation"],["Taddayt","Minimale"],
+  ["Tumyigt","Verbale"],["Tarumyigt","Non verbale"],["Taḥerfit","Simple"],["Tuddist","Complexe"],
+  ["Tamassaɣt","Relative"],["Taɣuni","Coordination"],["Asagel","Subordination"],["Anaw","Type"],["Ullis","Récit"],
+  ["Agelman","Descriptif"],["Imesfukel","Argumentatif"],["Imwelleh","D'orientation"],["Ifukal","Arguments"],
+  ["Turda","Opinion"],["Adiwenni","Dialogue"],["Tabadut","Définition"],["Asugnan","Imaginaire"],
+  ["Tulmisin","Caractéristiques"],["Asissen","Présentation"],["Asuneɣ","Dessin"],["Tasmuli","Présentation"],
+  ["Ifutas","Détails"],["Tasemlilt","Synthèse"],["Izenziɣen","Schémas"],["Tisuddwin","Organisations"],
+  ["Agbur","Sommaire"],["Tallalin","Aides"],["Takatut","Mémoire"],["Taftart","Document"],["Tafelwit","Tableau"],
+  ["Tiẓri","Vision"],["Ssenqed","Vérifier"],["Ssuddes","Organiser"],["Amahil","Travail"]
+];
+const glossGrid = document.getElementById("glossGrid"),
+      glossCount = document.getElementById("glossCount"),
+      glossEmpty = document.getElementById("glossEmpty"),
+      glossSearch = document.getElementById("glossSearch");
+function normalize(s){
+  // lowercase + strip diacritics so a search on "amyag" also matches, etc.
+  return s.toLowerCase()
+    .replace(/[ḍṭẓṛṣḥčǧɣɛ]/g, m => ({"ḍ":"d","ṭ":"t","ẓ":"z","ṛ":"r","ṣ":"s","ḥ":"h","č":"c","ǧ":"g","ɣ":"g","ɛ":"a"}[m]))
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+function renderGloss(filter){
+  const q = normalize(filter || "");
+  glossGrid.innerHTML = "";
+  const rows = GLOSSARY
+    .slice()
+    .sort((a,b)=>a[0].localeCompare(b[0],"fr"))
+    .filter(([k,f]) => !q || normalize(k).includes(q) || normalize(f).includes(q));
+  rows.forEach(([k,f])=>{
+    const d = document.createElement("div");
+    d.className = "gloss-item";
+    d.innerHTML = `<div class="kt">${k}</div><div class="fr">${f}</div>`;
+    glossGrid.appendChild(d);
+  });
+  glossCount.textContent = rows.length + " terme" + (rows.length>1?"s":"");
+  glossEmpty.style.display = rows.length ? "none" : "block";
+}
+glossSearch.addEventListener("input", e=>renderGloss(e.target.value));
+renderGloss("");
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+const QUIZ = [
+  {q:"Combien y a-t-il de voyelles pleines en tamazight ?", opts:["Deux","Trois : a, i, u","Cinq","Quatre"], a:1},
+  {q:"Quelles sont les trois consonnes emphatiques distinctives ?", opts:["b, d, g","ḍ, ṭ, ẓ","k, q, x","s, z, r"], a:1},
+  {q:"Le « e » (tiɣri n yilem) peut-il apparaître en fin de mot ?", opts:["Oui, toujours","Non, jamais","Seulement au pluriel","Seulement dans les verbes"], a:1},
+  {q:"À quel état est « urgaz » dans « Yewweḍ-d urgaz » ?", opts:["État libre","État d'annexion","Pluriel","Féminin"], a:1},
+  {q:"Comment « axxam » se met-il à l'état d'annexion ?", opts:["waxxam","uxxam","yaxxam","axxam (inchangé)"], a:1},
+  {q:"Que signifie « Ɣurek ! » ?", opts:["Tu as","Fais attention !","Chez toi","Sinon"], a:1},
+  {q:"Quel type de texte a pour but de convaincre ?", opts:["Ullis (narratif)","Agelman (descriptif)","Imesfukel (argumentatif)","Amanaḍ (injonctif)"], a:2},
+  {q:"Quel est le participe passé affirmatif du verbe « ečč » ?", opts:["ara yeččen","yeččan","ur nečči ara","itetten"], a:1}
+];
+let qIndex = 0, qScore = 0;
+const quizBody = document.getElementById("quizBody"),
+      quizNav = document.getElementById("quizNav"),
+      quizProg = document.getElementById("quizProg"),
+      quizNext = document.getElementById("quizNext");
+function renderQuiz(){
+  const item = QUIZ[qIndex];
+  quizNav.style.display = "none";
+  let html = `<div class="quiz-q"><span class="qn">${qIndex+1}/${QUIZ.length}</span>${item.q}</div><div class="quiz-opts">`;
+  item.opts.forEach((o,i)=> html += `<button class="qopt" data-i="${i}">${o}</button>`);
+  html += `</div>`;
+  quizBody.innerHTML = html;
+  quizBody.querySelectorAll(".qopt").forEach(btn=>{
+    btn.addEventListener("click", ()=>answer(parseInt(btn.dataset.i,10)));
+  });
+}
+function answer(choice){
+  const item = QUIZ[qIndex];
+  const opts = quizBody.querySelectorAll(".qopt");
+  opts.forEach((b,i)=>{
+    b.classList.add("locked");
+    b.style.pointerEvents = "none";
+    if(i === item.a) b.classList.add("correct");
+    else if(i === choice) b.classList.add("wrong");
+  });
+  if(choice === item.a) qScore++;
+  quizProg.textContent = "Score : " + qScore + " / " + QUIZ.length;
+  quizNext.textContent = qIndex < QUIZ.length-1 ? "Suivant →" : "Voir le résultat";
+  quizNav.style.display = "flex";
+}
+quizNext.addEventListener("click", ()=>{
+  if(qIndex < QUIZ.length-1){ qIndex++; renderQuiz(); }
+  else showScore();
+});
+function showScore(){
+  const pct = Math.round(qScore/QUIZ.length*100);
+  let msg = pct === 100 ? "Igerrez ! Sans faute — tazmert-ik tɣelb !"
+          : pct >= 60 ? "D ayen yelhan ! Continuez comme ça."
+          : "Sɛeddi tikkelt-nniḍen — relisez et retentez.";
+  quizBody.innerHTML =
+    `<div class="quiz-score"><div class="big">${qScore}/${QUIZ.length}</div>`+
+    `<div class="msg">${msg}</div>`+
+    `<button class="btn ghost" id="quizRestart">↺ Recommencer</button></div>`;
+  quizNav.style.display = "none";
+  document.getElementById("quizRestart").addEventListener("click", ()=>{
+    qIndex = 0; qScore = 0; renderQuiz();
+  });
+}
+renderQuiz();
+
+/* ============================================================
+   NAVIGATION — scroll spy, progress bar, drawer, back-to-top
+   ============================================================ */
+const progress = document.getElementById("progress");
+const totop = document.getElementById("totop");
+const navLinks = Array.from(document.querySelectorAll(".sb-link"));
+const sections = navLinks
+  .map(a => document.getElementById(a.getAttribute("href").slice(1)))
+  .filter(Boolean);
+
+function onScroll(){
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop;
+  const height = doc.scrollHeight - doc.clientHeight;
+  progress.style.width = (height > 0 ? (scrolled/height*100) : 0) + "%";
+  totop.classList.toggle("show", scrolled > 600);
+}
+window.addEventListener("scroll", onScroll, {passive:true});
+onScroll();
+
+const spy = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id = e.target.id;
+      navLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#"+id));
+    }
+  });
+}, {rootMargin:"-45% 0px -50% 0px", threshold:0});
+sections.forEach(s=>spy.observe(s));
+
+totop.addEventListener("click", ()=>window.scrollTo({top:0,behavior:"smooth"}));
+
+/* Mobile drawer */
+const sidebar = document.getElementById("sidebar"),
+      scrim = document.getElementById("scrim"),
+      burger = document.getElementById("burger");
+function closeDrawer(){ sidebar.classList.remove("open"); scrim.classList.remove("show"); }
+burger.addEventListener("click", ()=>{ sidebar.classList.toggle("open"); scrim.classList.toggle("show"); });
+scrim.addEventListener("click", closeDrawer);
+navLinks.forEach(a => a.addEventListener("click", ()=>{ if(window.innerWidth <= 940) closeDrawer(); }));
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+const revealObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add("revealed"); revealObs.unobserve(e.target); }
+  });
+}, {threshold:0.08});
+document.querySelectorAll(".reveal").forEach(el=>revealObs.observe(el));
+</script>
+</body>
+</html>
