@@ -6,7 +6,7 @@ phonological rules, punctuation, assimilation, the noun and the state of
 annexation, the verb, pronouns, sentence structure, text types, numbers, the
 Tifinagh script, a glossary, a bibliography, and an interactive quiz.
 
-🌍 **Live site:** _published via GitHub Pages_ (see the repository's "Pages" URL).
+🌍 **Live site:** https://anzart.github.io/tajerrumt-tamazight/
 
 ## About the content
 
